@@ -1,4 +1,5 @@
 ﻿using ASP.NETWebApiAuth.Core.Dtos;
+using ASP.NETWebApiAuth.Core.Entities;
 using ASP.NETWebApiAuth.Core.OtherObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -17,11 +18,11 @@ namespace ASP.NETWebApiAuth.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
 
-        public AuthController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
+        public AuthController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -59,8 +60,10 @@ namespace ASP.NETWebApiAuth.Controllers
                 return BadRequest("User with the given Username already exists");
             }
 
-            IdentityUser user = new IdentityUser()
+            ApplicationUser user = new ApplicationUser()
             {
+                FirstName = registerDto.FirstName,
+                LastName = registerDto.LastName,
                 UserName = registerDto.UserName,
                 Email = registerDto.Email,
                 SecurityStamp = Guid.NewGuid().ToString()
