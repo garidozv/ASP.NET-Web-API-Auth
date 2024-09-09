@@ -1,5 +1,7 @@
 using ASP.NETWebApiAuth.Core.DbContext;
 using ASP.NETWebApiAuth.Core.Entities;
+using ASP.NETWebApiAuth.Core.Interfaces;
+using ASP.NETWebApiAuth.Core.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -58,6 +60,10 @@ builder.Services
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
         };
     });
+
+// Add Dependencies
+builder.Services.AddScoped<IAuthService, AuthService>();
+
 
 
 var app = builder.Build();
