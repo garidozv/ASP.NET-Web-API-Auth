@@ -1,5 +1,6 @@
 ﻿using ASP.NETWebApiAuth.Core.Dtos;
 using ASP.NETWebApiAuth.Core.OtherObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -136,6 +137,40 @@ namespace ASP.NETWebApiAuth.Controllers
             string token = new JwtSecurityTokenHandler().WriteToken(tokenObject);
 
             return token;
+        }
+
+        [HttpPost]
+        [Route("make-admin")]
+        [Authorize(Roles = StaticUserRoles.OWNER)]
+        public async Task<IActionResult> MakeAdmin([FromBody] UpdatePremissionDto updatePremissionDto)
+        {
+            var user = await _userManager.FindByNameAsync(updatePremissionDto.UserName);
+
+            if (user == null)
+            {
+                return BadRequest("Invalid Username");
+            }
+
+            await _userManager.AddToRoleAsync(user, StaticUserRoles.ADMIN);
+
+            return Ok("Admin role successfuly added");
+        }
+
+        [HttpPost]
+        [Route("make-owner")]
+        [Authorize(Roles = StaticUserRoles.OWNER)]
+        public async Task<IActionResult> MakeOwner([FromBody] UpdatePremissionDto updatePremissionDto)
+        {
+            var user = await _userManager.FindByNameAsync(updatePremissionDto.UserName);
+
+            if (user == null)
+            {
+                return BadRequest("Invalid Username");
+            }
+
+            await _userManager.AddToRoleAsync(user, StaticUserRoles.OWNER);
+             
+            return Ok("Owner role successfuly added");
         }
     }
 }
